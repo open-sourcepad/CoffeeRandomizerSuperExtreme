@@ -1,0 +1,3 @@
+module CoffeeRandomizerSuperExtreme
+  VERSION = "0.0.1"
+end
