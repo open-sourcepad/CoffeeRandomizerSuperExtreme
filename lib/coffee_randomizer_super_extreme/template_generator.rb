@@ -11,13 +11,16 @@ module CoffeeRandomizerSuperExtreme
       @participants = (1..count).to_a
       @sum_of_pair_counts = (0..(@max_pair_count+1))
       @log = ::Logger.new("log/test.log")
+      @complete = false
+      @tries_per_season = 0
     end
 
     def generate
       log_me "#{Time.now}:BEGIN - Generation"
-      @tries_per_season = 0
+      end_time = Time.now + 86400 #seconds
       new_season
-      while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
+      #while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
+      while @season.count < number_of_rounds and Time.now < end_time and !@complete
         initialize_round_requirements
         log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
         while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
@@ -33,7 +36,12 @@ module CoffeeRandomizerSuperExtreme
         season_check
       end
       log_me "#{Time.now}:END - Generation"
-      @tries_per_season >= @max_tries_per_season ? false : @season.map{|round| round.map{|group| group.map{|participant| participant}}}
+      #@tries_per_season >= @max_tries_per_season ? false : @season.map{|round| round.map{|group| group.map{|participant| participant}}}
+      if Time.now >= end_time
+        false
+      else
+        @season.map{|round| round.map{|group| group.map{|participant| participant}}}
+      end
     end
 
     def number_of_rounds
@@ -194,7 +202,7 @@ module CoffeeRandomizerSuperExtreme
         if @tries_per_round >= @max_tries_per_round
           @tries_per_season += 1
           log_me "FAIL: Tries per Round exceeded" 
-          log_me "Increase Try per Season - Total:#{@tries_per_season}"
+          #log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
         else
@@ -208,9 +216,11 @@ module CoffeeRandomizerSuperExtreme
              check_pairs.uniq.first != (@participants.length - 1))))
           @tries_per_season += 1
           log_me "FAIL: Season ended but not everyone met each other"
-          log_me "Increase Try per Season - Total:#{@tries_per_season}"
+          #log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
+        elsif check_pairs.uniq.count == 1 and check_pairs.uniq.first == (@participants.length - 1)
+          @complete = true
         end
       end
 
