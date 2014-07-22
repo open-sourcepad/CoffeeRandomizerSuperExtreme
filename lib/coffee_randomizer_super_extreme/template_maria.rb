@@ -12,7 +12,7 @@ module CoffeeRandomizerSuperExtreme
       @participants = (1..participants_count).to_a
       @tries_per_round = 0
       @tries_per_season = 0
-      @log = ::Logger.new("log/test.log")
+      @log = ::Logger.new("log/results.log")
     end
 
     def generate_groups
@@ -35,16 +35,15 @@ module CoffeeRandomizerSuperExtreme
           print_season_details
           log_season_details
           return true
-          break
         end
 
         if !season_complete?
           if Time.now == END_TIME
-            puts "Failed"
-            puts "Number of rounds #{@rounds.count}"
+            #puts "Failed"
+            #puts "Number of rounds #{@rounds.count}"
             break
           else
-            puts "Number of rounds #{@rounds.count}"
+            #puts "Number of rounds #{@rounds.count}"
             restart_season
           end
         end
@@ -93,7 +92,7 @@ module CoffeeRandomizerSuperExtreme
               update_skipped(possible_pair)              
 
               if group_incomplete? && @tries_per_round == ROUND_RETRIES
-                puts "Number of rounds #{@rounds.count}"
+                #puts "Number of rounds #{@rounds.count}"
                 restart_season
               elsif group_incomplete? && @tries_per_round < ROUND_RETRIES
                 restart_round
@@ -105,8 +104,8 @@ module CoffeeRandomizerSuperExtreme
       end
 
       if @tries_per_round == ROUND_RETRIES
-        puts "Alternative Restart Season!"
-        puts "Number of rounds #{@rounds.count}"
+        #puts "Alternative Restart Season!"
+        #puts "Number of rounds #{@rounds.count}"
         restart_season
       end
 
@@ -167,23 +166,24 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def print_season_details
-      puts "Season completed!"
-      puts "Version 2.5"
-      puts "Number of participants - #{@participants_count}"
-      puts"Number of rounds - #{@rounds.count}"
-      puts "Number of groups - #{@rounds.last.count}"
+      #puts "Season completed!"
+      #puts "Version 2.5"
+      #puts "Number of participants - #{@participants_count}"
+      #puts"Number of rounds - #{@rounds.count}"
+      #puts "Number of groups - #{@rounds.last.count}"
       print_groups
     end
 
     def print_groups
       @rounds.each_with_index do |round, i|
-        puts "Round #{i+1} - #{round}"
+        @log.info("Round #{i+1} - #{round}")
+        #puts "Round #{i+1} - #{round}"
       end
     end
 
     def log_groups
       @rounds.each_with_index do |round, i|
-        @log.info("Round #{i+1} - #{round}")
+        #@log.info("Round #{i+1} - #{round}")
       end     
     end
 
@@ -238,21 +238,21 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def next_group
-      puts "Next group"
-      sum_of_pair_counts = 0
+      #puts "Next group"
+      #sum_of_pair_counts = 0
       @group_participants = []
       @available_participants += @skipped
       @skipped = []
     end
 
     def next_round
-      puts "Next round"
+      #puts "Next round"
       initialize_round
     end
 
     def restart_round
       @tries_per_round += 1
-      puts "Restart round"
+      #puts "Restart round"
       decrement_pair_counters # do this before clearing out round and group
       initialize_group
       initialize_round
@@ -262,8 +262,8 @@ module CoffeeRandomizerSuperExtreme
       @tries_per_season += 1
       @tries_per_round = 0
       @rounds = []
-      puts "Restart season!"
-      puts "#{@tries_per_season}"
+      #puts "Restart season!"
+      #puts "#{@tries_per_season}"
       initialize_pair_counters
       initialize_group
       initialize_round
