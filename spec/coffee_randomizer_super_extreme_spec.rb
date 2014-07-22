@@ -3,7 +3,8 @@ require 'spec_helper'
 describe CoffeeRandomizerSuperExtreme do
   let(:template_normz) { CoffeeRandomizerSuperExtreme::TemplateNormz}
   let(:testbed) { CoffeeRandomizerSuperExtreme::TestBed}
-  
+  let(:generator) { CoffeeRandomizerSuperExtreme::TemplateMaria }
+
   context :normz do
     it 'should generate a template for 9 participants' do
       tg = template_normz.new(9)
@@ -19,4 +20,11 @@ describe CoffeeRandomizerSuperExtreme do
       expect(tb.results[9][:check_pairs].uniq.count).to be == 1
     end
   end
+
+  context :maria do
+    it "generates a template for 9 participants" do
+      expect(generator.new(9).generate_groups).to eq true
+    end
+  end
 end
+
