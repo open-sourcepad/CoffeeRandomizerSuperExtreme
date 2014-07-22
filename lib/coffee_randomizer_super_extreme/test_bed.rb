@@ -10,7 +10,7 @@ module CoffeeRandomizerSuperExtreme
     def start(range)
       range.each do |i|
         @results[i] = {}
-        am = CoffeeRandomizerSuperExtreme::TemplateGenerator.new(i)
+        am = CoffeeRandomizerSuperExtreme::TemplateNormz.new(i)
         x = Time.now
         succeed = am.generate
         y = Time.now

@@ -1,5 +1,5 @@
 module CoffeeRandomizerSuperExtreme
-  class TemplateGenerator
+  class TemplateNormz
     attr_accessor :min_number_per_group, :max_tries_per_round, :max_tries_per_season, 
                   :season, :pair_manager, :tries_per_season
 
