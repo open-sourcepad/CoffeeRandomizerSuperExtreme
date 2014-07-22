@@ -7,6 +7,6 @@ Bundler.setup
 puts "Enter Participant Count: (must be multiples of 3 i.e. 9 / 15/ 21 / 27 / 33 / etc.)"
 count = gets.chomp
 
-generator = CoffeeRandomizerSuperExtreme::TemplateGenerator.new(count.to_i)
+generator = CoffeeRandomizerSuperExtreme::TemplateGenerator2.new(count.to_i)
 generator.generate_groups
   
