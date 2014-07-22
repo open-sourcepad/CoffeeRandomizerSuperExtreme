@@ -1,0 +1,12 @@
+common: &common
+  adapter: postgresql
+  host: localhost
+  username: normz
+  password: root
+development:
+  <<: *common
+  database: coffeego_development
+test:
+  <<: *common
+  database: coffeego_test
+
