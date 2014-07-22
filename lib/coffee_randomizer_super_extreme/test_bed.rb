@@ -4,6 +4,7 @@ module CoffeeRandomizerSuperExtreme
 
     def initialize
       @results = {}
+      @log = ::Logger.new("log/results.log")
     end
 
     def start(range)
@@ -20,6 +21,10 @@ module CoffeeRandomizerSuperExtreme
         @results[i][:check_duplicates] = am.check_duplicates
         @results[i][:time] = (y - x) * 1000
         @results[i][:tries_per_season] = am.tries_per_season
+        @log.info "========= Results for #{i} ========="
+        @results[i].keys.reject{|me| [:check_pairs, :check_duplicates].include?(me)}.each do |r|
+          @log.info "#{r}: #{@results[i][r]}"
+        end
       end
     end
   end

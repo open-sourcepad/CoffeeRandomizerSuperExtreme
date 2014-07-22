@@ -14,15 +14,15 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def generate
-      @log.debug "#{Time.now}:BEGIN - Generation"
+      log_me "#{Time.now}:BEGIN - Generation"
       @tries_per_season = 0
       new_season
       while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
         initialize_round_requirements
-        @log.debug "Round: #{@season.count + 1} / #{number_of_rounds}"
+        log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
         while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
-          @log.debug "Group: #{@round.count + 1} / #{number_of_groups}"
-          @log.debug "Unique Pair Counts: #{check_pairs.uniq}"
+          log_me "Group: #{@round.count + 1} / #{number_of_groups}"
+          log_me "Unique Pair Counts: #{check_pairs.uniq}"
           assign_round_groups
           check_for_round_skips
         end
@@ -32,7 +32,7 @@ module CoffeeRandomizerSuperExtreme
         end
         season_check
       end
-      @log.debug "#{Time.now}:END - Generation"
+      log_me "#{Time.now}:END - Generation"
       @tries_per_season >= @max_tries_per_season ? false : @season.map{|round| round.map{|group| group.map{|participant| participant}}}
     end
 
@@ -78,9 +78,9 @@ module CoffeeRandomizerSuperExtreme
         @available = @participants.dup
         @skipped = []
         @round = []
-        @log.debug "==="
-        @log.debug "Initialize Round Requirements"
-        @log.debug "<<<"
+        log_me "==="
+        log_me "Initialize Round Requirements"
+        log_me "<<<"
       end
 
       def get_pairs(participant, possible_pair)
@@ -104,44 +104,44 @@ module CoffeeRandomizerSuperExtreme
 
       def assign_round_groups
         @group = []
-        @log.debug "==="
-        @log.debug "Assign Round Groups"
+        log_me "==="
+        log_me "Assign Round Groups"
         assignment_logic(@min_number_per_group)
-        @log.debug "<<<"
+        log_me "<<<"
       end
       
       def assign_extra_participants
-        @log.debug "==="
-        @log.debug "Assign Extra Participants"
+        log_me "==="
+        log_me "Assign Extra Participants"
         @round.each do |g|
-          @log.debug "Group: #{g}"
+          log_me "Group: #{g}"
           @group = g
           assignment_logic(@min_number_per_group + 1)
         end
-        @log.debug "<<<"
+        log_me "<<<"
       end
       
       def assignment_logic(minimum_group_count)
         @sum_of_pair_counts.each do |condition|
-          @log.debug "Applying condition #{condition}"
+          log_me "Applying condition #{condition}"
           @skipped = []
           @available.shuffle.each do |participant|
             break if @group.count == minimum_group_count
-            @log.debug "---"
-            @log.debug "Random Person: #{participant}"
+            log_me "---"
+            log_me "Random Person: #{participant}"
             if accept_to_group(@group, participant, condition)
-              @log.debug "Add #{participant} to group #{@group.inspect}"
+              log_me "Add #{participant} to group #{@group.inspect}"
               add_group_to_pairs(@group, participant)
               @available.delete participant
               @group << participant
             else
-              @log.debug "Skip #{participant}"
-              @log.debug "Group: #{@group.inspect}"
-              @log.debug "Condition: #{condition}"
-              @log.debug "Check Duplicates: #{check_duplicates(participant).inspect}"
+              log_me "Skip #{participant}"
+              log_me "Group: #{@group.inspect}"
+              log_me "Condition: #{condition}"
+              log_me "Check Duplicates: #{check_duplicates(participant).inspect}"
               @skipped << participant
             end
-            @log.debug "---"
+            log_me "---"
           end
           if @group.count == minimum_group_count
             @skipped = []
@@ -150,23 +150,23 @@ module CoffeeRandomizerSuperExtreme
       end
 
       def check_for_round_skips
-        @log.debug "==="
-        @log.debug "Check for Skipped participants in the round"
+        log_me "==="
+        log_me "Check for Skipped participants in the round"
         if !@skipped.empty?
-          @log.debug "FAIL: There are skipped participants"
-          @log.debug "Skipped: #{@skipped.inspect}"
-          @log.debug "Group: #{@group.inspect}"
-          @log.debug "Check Duplicates: #{check_duplicates.inspect}"
+          log_me "FAIL: There are skipped participants"
+          log_me "Skipped: #{@skipped.inspect}"
+          log_me "Group: #{@group.inspect}"
+          log_me "Check Duplicates: #{check_duplicates.inspect}"
           restart_round
         else
           next_group
         end
-        @log.debug "<<<"
+        log_me "<<<"
       end
 
       def restart_round
         @tries_per_round += 1
-        @log.debug "Tries Per Round:#{@tries_per_round}"
+        log_me "Tries Per Round:#{@tries_per_round}"
         initialize_round_requirements
         rebuild_pair_manager
       end
@@ -193,22 +193,22 @@ module CoffeeRandomizerSuperExtreme
       def season_check
         if @tries_per_round >= @max_tries_per_round
           @tries_per_season += 1
-          @log.debug "FAIL: Tries per Round exceeded" 
-          @log.debug "Increase Try per Season - Total:#{@tries_per_season}"
+          log_me "FAIL: Tries per Round exceeded" 
+          log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
         else
           @season << @round
-          @log.debug "SUCCESS: Round accepted" 
-          @log.debug "Round: #{@round.map{|me| me}}" 
+          log_me "SUCCESS: Round accepted" 
+          log_me "Round: #{@round.map{|me| me}}" 
         end
         if(@season.count == number_of_rounds and 
            (check_pairs.uniq.count > 1 or 
             (check_pairs.uniq.count == 1 and 
              check_pairs.uniq.first != (@participants.length - 1))))
           @tries_per_season += 1
-          @log.debug "FAIL: Season ended but not everyone met each other"
-          @log.debug "Increase Try per Season - Total:#{@tries_per_season}"
+          log_me "FAIL: Season ended but not everyone met each other"
+          log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
         end
@@ -221,6 +221,11 @@ module CoffeeRandomizerSuperExtreme
         @participants.each do |p|
           @pair_manager[p] = []
         end
+      end
+
+      def log_me(string)
+        #@log.debug(string)
+        #puts string
       end
   end
 end
