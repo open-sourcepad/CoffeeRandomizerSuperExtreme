@@ -1,6 +1,6 @@
 module CoffeeRandomizerSuperExtreme
   class TemplateNormz
-    attr_accessor :min_number_per_group, :max_tries_per_round, :max_tries_per_season, 
+    attr_accessor :min_number_per_group, :max_tries_per_round, :max_tries_per_season,
                   :season, :pair_manager, :tries_per_season
 
     def initialize(count)
@@ -17,7 +17,7 @@ module CoffeeRandomizerSuperExtreme
 
     def generate
       log_me "#{Time.now}:BEGIN - Generation"
-      end_time = Time.now + 86400 #seconds
+      end_time = Time.now + 432000 #seconds
       new_season
       #while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
       while @season.count < number_of_rounds and Time.now < end_time and !@complete
@@ -51,7 +51,7 @@ module CoffeeRandomizerSuperExtreme
     def number_of_groups
       (@participants.length / @min_number_per_group.to_f).floor
     end
-      
+
     def check_duplicates(participant=nil)
       hash = {}
       @pair_manager.each do |key, val|
@@ -63,11 +63,11 @@ module CoffeeRandomizerSuperExtreme
       end
       participant ? hash[participant] : hash
     end
-    
+
     def check_pairs
       @pair_manager.map{|key, val| val.uniq.count}
     end
-    
+
     def check_array
       hash = []
       @round.each do |g|
@@ -117,7 +117,7 @@ module CoffeeRandomizerSuperExtreme
         assignment_logic(@min_number_per_group)
         log_me "<<<"
       end
-      
+
       def assign_extra_participants
         log_me "==="
         log_me "Assign Extra Participants"
@@ -128,7 +128,7 @@ module CoffeeRandomizerSuperExtreme
         end
         log_me "<<<"
       end
-      
+
       def assignment_logic(minimum_group_count)
         @sum_of_pair_counts.each do |condition|
           log_me "Applying condition #{condition}"
@@ -178,7 +178,7 @@ module CoffeeRandomizerSuperExtreme
         initialize_round_requirements
         rebuild_pair_manager
       end
-      
+
       def rebuild_pair_manager
         @participants.each do |p|
           @pair_manager[p] = []
@@ -201,18 +201,18 @@ module CoffeeRandomizerSuperExtreme
       def season_check
         if @tries_per_round >= @max_tries_per_round
           @tries_per_season += 1
-          log_me "FAIL: Tries per Round exceeded" 
+          log_me "FAIL: Tries per Round exceeded"
           #log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
         else
           @season << @round
-          log_me "SUCCESS: Round accepted" 
-          log_me "Round: #{@round.map{|me| me}}" 
+          log_me "SUCCESS: Round accepted"
+          log_me "Round: #{@round.map{|me| me}}"
         end
-        if(@season.count == number_of_rounds and 
-           (check_pairs.uniq.count > 1 or 
-            (check_pairs.uniq.count == 1 and 
+        if(@season.count == number_of_rounds and
+           (check_pairs.uniq.count > 1 or
+            (check_pairs.uniq.count == 1 and
              check_pairs.uniq.first != (@participants.length - 1))))
           @tries_per_season += 1
           log_me "FAIL: Season ended but not everyone met each other"
