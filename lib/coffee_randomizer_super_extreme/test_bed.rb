@@ -18,11 +18,9 @@ module CoffeeRandomizerSuperExtreme
         @results[i][:check_pairs] = am.check_pairs
         @results[i][:number_of_rounds] = am.number_of_rounds
         @results[i][:number_of_groups] = am.number_of_groups
-        @results[i][:check_duplicates] = am.check_duplicates
         @results[i][:time] = (y - x) * 1000
-        @results[i][:tries_per_season] = am.tries_per_season
         @log.info "========= Results for #{i} ========="
-        @results[i].keys.reject{|me| [:check_pairs, :check_duplicates].include?(me)}.each do |r|
+        @results[i].keys.each do |r|
           @log.info "#{r}: #{@results[i][r]}"
         end
       end

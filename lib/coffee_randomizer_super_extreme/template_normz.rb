@@ -1,19 +1,16 @@
 module CoffeeRandomizerSuperExtreme
   class TemplateNormz
-    attr_accessor :min_number_per_group, :max_tries_per_round, :max_tries_per_season,
-                  :season, :pair_manager, :tries_per_season
+    attr_accessor :min_number_per_group, :max_tries_per_round, :season, :pair_manager
 
     def initialize(count)
       @min_number_per_group = 3
       @max_tries_per_round  = 1000
-      @max_tries_per_season = 1000
       @max_pair_count = 2
       @participants = (1..count).to_a
       @sum_of_pair_counts = (0..(@max_pair_count+1))
       @log = ::Logger.new("log/test.log")
       @round_increment = 0
       @complete = false
-      @tries_per_season = 0
     end
 
     def generate
@@ -40,7 +37,6 @@ module CoffeeRandomizerSuperExtreme
         if Time.now >= end_time
           @complete = false
           @round_increment += 1
-          @tries_per_season = 0
         else
           @complete = @season.map{|round| round.map{|group| group.map{|participant| participant}}}
         end
@@ -54,18 +50,6 @@ module CoffeeRandomizerSuperExtreme
 
     def number_of_groups
       (@participants.length / @min_number_per_group.to_f).floor
-    end
-
-    def check_duplicates(participant=nil)
-      hash = {}
-      @pair_manager.each do |key, val|
-        inner_hash = {}
-        val.each do |v|
-          inner_hash[v] = val.select{|iv| iv == v}.count
-        end
-        hash[key] = inner_hash
-      end
-      participant ? hash[participant] : hash
     end
 
     def check_pairs
@@ -138,7 +122,6 @@ module CoffeeRandomizerSuperExtreme
               log_me "Skip #{participant}"
               log_me "Group: #{@group.inspect}"
               log_me "Condition: #{condition}"
-              log_me "Check Duplicates: #{check_duplicates(participant).inspect}"
               @skipped << participant
             end
             log_me "---"
@@ -156,7 +139,6 @@ module CoffeeRandomizerSuperExtreme
           log_me "FAIL: There are skipped participants"
           log_me "Skipped: #{@skipped.inspect}"
           log_me "Group: #{@group.inspect}"
-          log_me "Check Duplicates: #{check_duplicates.inspect}"
           restart_round
         else
           next_group
@@ -192,7 +174,6 @@ module CoffeeRandomizerSuperExtreme
 
       def season_check
         if @tries_per_round >= @max_tries_per_round
-          @tries_per_season += 1
           log_me "FAIL: Tries per Round exceeded"
           @round = []
           new_season
@@ -205,7 +186,6 @@ module CoffeeRandomizerSuperExtreme
            (check_pairs.uniq.count > 1 or
             (check_pairs.uniq.count == 1 and
              check_pairs.uniq.first != (@participants.length - 1))))
-          @tries_per_season += 1
           log_me "FAIL: Season ended but not everyone met each other"
           @round = []
           new_season
