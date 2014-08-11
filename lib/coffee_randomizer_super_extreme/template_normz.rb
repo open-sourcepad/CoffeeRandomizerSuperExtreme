@@ -17,10 +17,11 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def generate
-      log_me "#{Time.now}:BEGIN - Generation"
-      new_season
       while @round_increment < 3 and @complete == false
-        while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
+        log_me "#{Time.now}:BEGIN - Generation"
+        new_season
+        end_time = Time.now + 3600
+        while @season.count < number_of_rounds and Time.now < end_time
           initialize_round_requirements
           log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
           while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
@@ -36,7 +37,7 @@ module CoffeeRandomizerSuperExtreme
           season_check
         end
         log_me "#{Time.now}:END - Generation"
-        if @tries_per_season >= @max_tries_per_season
+        if Time.now >= end_time
           @complete = false
           @round_increment += 1
           @tries_per_season = 0
@@ -69,18 +70,6 @@ module CoffeeRandomizerSuperExtreme
 
     def check_pairs
       @pair_manager.map{|key, val| val.uniq.count}
-    end
-
-    def check_array
-      hash = []
-      @round.each do |g|
-        inner_hash = {}
-        g.each do |p|
-          inner_hash[p] = @pair_manager[p]
-        end
-        hash << inner_hash
-      end
-      hash
     end
 
     private
@@ -233,9 +222,8 @@ module CoffeeRandomizerSuperExtreme
       end
 
       def log_me(string)
-        @log.debug(string)
+        #@log.debug(string)
         #puts string
       end
   end
 end
-
