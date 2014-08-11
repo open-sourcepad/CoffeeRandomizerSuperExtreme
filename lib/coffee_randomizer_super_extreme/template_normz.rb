@@ -11,41 +11,44 @@ module CoffeeRandomizerSuperExtreme
       @participants = (1..count).to_a
       @sum_of_pair_counts = (0..(@max_pair_count+1))
       @log = ::Logger.new("log/test.log")
+      @round_increment = 0
       @complete = false
       @tries_per_season = 0
     end
 
     def generate
       log_me "#{Time.now}:BEGIN - Generation"
-      end_time = Time.now + 432000 #seconds
       new_season
-      #while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
-      while @season.count < number_of_rounds and Time.now < end_time and !@complete
-        initialize_round_requirements
-        log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
-        while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
-          log_me "Group: #{@round.count + 1} / #{number_of_groups}"
-          log_me "Unique Pair Counts: #{check_pairs.uniq}"
-          assign_round_groups
-          check_for_round_skips
+      while @round_increment < 3 and @complete == false
+        while @season.count < number_of_rounds and @tries_per_season < @max_tries_per_season
+          initialize_round_requirements
+          log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
+          while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
+            log_me "Group: #{@round.count + 1} / #{number_of_groups}"
+            log_me "Unique Pair Counts: #{check_pairs.uniq}"
+            assign_round_groups
+            check_for_round_skips
+          end
+          if !@available.empty?
+            assign_extra_participants
+            restart_round if !@skipped.empty? or !@available.empty?
+          end
+          season_check
         end
-        if !@available.empty?
-          assign_extra_participants
-          restart_round if !@skipped.empty? or !@available.empty?
+        log_me "#{Time.now}:END - Generation"
+        if @tries_per_season >= @max_tries_per_season
+          @complete = false
+          @round_increment += 1
+          @tries_per_season = 0
+        else
+          @complete = @season.map{|round| round.map{|group| group.map{|participant| participant}}}
         end
-        season_check
       end
-      log_me "#{Time.now}:END - Generation"
-      #@tries_per_season >= @max_tries_per_season ? false : @season.map{|round| round.map{|group| group.map{|participant| participant}}}
-      if Time.now >= end_time
-        false
-      else
-        @season.map{|round| round.map{|group| group.map{|participant| participant}}}
-      end
+      @complete
     end
 
     def number_of_rounds
-      ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil
+      ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil + @round_increment
     end
 
     def number_of_groups
@@ -202,7 +205,6 @@ module CoffeeRandomizerSuperExtreme
         if @tries_per_round >= @max_tries_per_round
           @tries_per_season += 1
           log_me "FAIL: Tries per Round exceeded"
-          #log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
         else
@@ -216,11 +218,8 @@ module CoffeeRandomizerSuperExtreme
              check_pairs.uniq.first != (@participants.length - 1))))
           @tries_per_season += 1
           log_me "FAIL: Season ended but not everyone met each other"
-          #log_me "Increase Try per Season - Total:#{@tries_per_season}"
           @round = []
           new_season
-        elsif check_pairs.uniq.count == 1 and check_pairs.uniq.first == (@participants.length - 1)
-          @complete = true
         end
       end
 
@@ -234,7 +233,7 @@ module CoffeeRandomizerSuperExtreme
       end
 
       def log_me(string)
-        #@log.debug(string)
+        @log.debug(string)
         #puts string
       end
   end
