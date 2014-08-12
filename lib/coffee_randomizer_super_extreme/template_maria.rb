@@ -322,7 +322,7 @@ module CoffeeRandomizerSuperExtreme
 
     def num_of_rounds
       num_of_rounds = (@participants_count - 1).to_f / (3 - 1).to_f
-      num_of_rounds.ceil
+      (num_of_rounds + 1).ceil 
     end 
 
     def num_of_groups
