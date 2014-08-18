@@ -14,10 +14,10 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def generate
-      while @round_increment < 3 and @complete == false
+      while @round_increment <= 3 and @complete == false
         log_me "#{Time.now}:BEGIN - Generation"
         new_season
-        end_time = Time.now + 3600
+        end_time = Time.now + 1800
         while @season.count < number_of_rounds and Time.now < end_time
           initialize_round_requirements
           log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
