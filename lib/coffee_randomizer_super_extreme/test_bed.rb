@@ -7,16 +7,17 @@ module CoffeeRandomizerSuperExtreme
       @log = ::Logger.new("log/results.log")
     end
 
-    def start(range)
+    def start(range, round_increment=3)
       range.each do |i|
         @results[i] = {}
-        am = CoffeeRandomizerSuperExtreme::TemplateNormz.new(i)
+        am = CoffeeRandomizerSuperExtreme::TemplateNormz.new(i, round_increment)
         x = Time.now
         succeed = am.generate
         y = Time.now
         @results[i][:result] = succeed
         @results[i][:check_pairs] = am.check_pairs
         @results[i][:number_of_rounds] = am.number_of_rounds
+        @results[i][:number_of_original_rounds] = am.number_of_original_rounds
         @results[i][:number_of_groups] = am.number_of_groups
         @results[i][:time] = (y - x) * 1000
         @log.info "========= Results for #{i} ========="

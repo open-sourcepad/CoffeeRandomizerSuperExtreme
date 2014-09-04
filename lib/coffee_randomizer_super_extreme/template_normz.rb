@@ -2,7 +2,7 @@ module CoffeeRandomizerSuperExtreme
   class TemplateNormz
     attr_accessor :min_number_per_group, :max_tries_per_round, :season, :pair_manager
 
-    def initialize(count)
+    def initialize(count, increment_max=3)
       @min_number_per_group = 3
       @max_tries_per_round  = 1000
       @max_pair_count = 2
@@ -11,13 +11,14 @@ module CoffeeRandomizerSuperExtreme
       @log = ::Logger.new("log/test.log")
       @round_increment = 0
       @complete = false
+      @increment_max = increment_max
     end
 
     def generate
-      while @round_increment <= 3 and @complete == false
+      while @round_increment <= @increment_max and @complete == false
         log_me "#{Time.now}:BEGIN - Generation"
         new_season
-        end_time = Time.now + 1800
+        end_time = Time.now + 600
         while @season.count < number_of_rounds and Time.now < end_time
           initialize_round_requirements
           log_me "Round: #{@season.count + 1} / #{number_of_rounds}"
@@ -37,6 +38,7 @@ module CoffeeRandomizerSuperExtreme
         if Time.now >= end_time
           @complete = false
           @round_increment += 1
+          puts "increase round increment by 1: #{@round_increment}"
         else
           @complete = @season.map{|round| round.map{|group| group.map{|participant| participant}}}
         end
@@ -46,6 +48,10 @@ module CoffeeRandomizerSuperExtreme
 
     def number_of_rounds
       ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil + @round_increment
+    end
+
+    def number_of_original_rounds
+      ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil
     end
 
     def number_of_groups
