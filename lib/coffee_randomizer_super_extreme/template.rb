@@ -1,5 +1,5 @@
 module CoffeeRandomizerSuperExtreme
-  class TemplateNormz
+  class Template
     attr_accessor :min_number_per_group, :max_tries_per_round, :season, :pair_manager
 
     def initialize(count, increment_max=3)

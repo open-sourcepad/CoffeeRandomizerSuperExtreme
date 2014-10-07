@@ -1,3 +1,5 @@
 module CoffeeRandomizerSuperExtreme
-  VERSION = "2.0"
+  class TemplateUpgrade
+  end
 end
+
