@@ -2,15 +2,16 @@ module CoffeeRandomizerSuperExtreme
   class TestBed
     attr_accessor :results
 
-    def initialize
+    def initialize(time)
       @results = {}
+			@time = time
       @log = ::Logger.new("log/results.log")
     end
 
     def start(range, round_increment=3)
       range.each do |i|
         @results[i] = {}
-        am = CoffeeRandomizerSuperExtreme::Template.new(i, round_increment)
+        am = CoffeeRandomizerSuperExtreme::Template.new(i, round_increment, @time)
         x = Time.now
         succeed = am.generate
         y = Time.now

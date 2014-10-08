@@ -2,7 +2,7 @@ module CoffeeRandomizerSuperExtreme
   class Template
     attr_accessor :min_number_per_group, :max_tries_per_round, :season, :pair_manager
 
-    def initialize(count, increment_max=3)
+    def initialize(count, increment_max=3, time=600)
       @min_number_per_group = 3
       @max_tries_per_round  = 1000
       @max_pair_count = 2
@@ -13,7 +13,7 @@ module CoffeeRandomizerSuperExtreme
       @complete = false
       @increment_max = increment_max
       @pair_manager = CoffeeRandomizerSuperExtreme::PairManager.new(@participants)
-      @end_time = Time.now + 600
+      @end_time = Time.now + time
     end
 
     def generate
