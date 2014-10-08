@@ -27,7 +27,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it "should use test bed for generating templates" do
-      tb = testbed.new
+      tb = testbed.new(600)
       tb.start(9..9)
       expect(tb.results).to_not be == false
       expect(tb.results[9][:check_pairs].uniq.count).to be == 1

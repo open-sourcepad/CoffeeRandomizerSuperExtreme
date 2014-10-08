@@ -13,7 +13,7 @@ module CoffeeRandomizerSuperExtreme
       @complete = false
       @increment_max = increment_max
       @pair_manager = CoffeeRandomizerSuperExtreme::PairManager.new(@participants)
-      @end_time = Time.now + time
+      @end_time = Time.now + time.seconds
     end
 
     def generate
