@@ -21,7 +21,7 @@ while try_again
       puts "Invalid second value. Please try again."
     end
   end
-  tb = CoffeeRandomizerSuperExtreme::TestBed.new(time)
+  tb = CoffeeRandomizerSuperExtreme::TestBed.new(time.to_i)
   tb.start(from.to_i..to.to_i)
   @results = tb.results
 
