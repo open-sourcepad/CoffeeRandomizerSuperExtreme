@@ -140,6 +140,7 @@ module CoffeeRandomizerSuperExtreme
 
       def check_for_retry_limit
         if Time.now >= @end_time
+          @end_time = Time.now + time.seconds
           @complete = false
           @round_increment += 1
         else
