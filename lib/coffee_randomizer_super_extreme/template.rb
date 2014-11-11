@@ -13,7 +13,8 @@ module CoffeeRandomizerSuperExtreme
       @complete = false
       @increment_max = increment_max
       @pair_manager = CoffeeRandomizerSuperExtreme::PairManager.new(@participants)
-      @end_time = Time.now + time.seconds
+      @time = time
+      @end_time = Time.now + @time.seconds
     end
 
     def generate
@@ -140,7 +141,7 @@ module CoffeeRandomizerSuperExtreme
 
       def check_for_retry_limit
         if Time.now >= @end_time
-          @end_time = Time.now + time.seconds
+          @end_time = Time.now + @time.seconds
           @complete = false
           @round_increment += 1
         else
