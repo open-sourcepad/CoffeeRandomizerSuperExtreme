@@ -1,0 +1,6 @@
+/home/ivisitmd/CoffeeRandomizerSuperExtreme/vendor/bundle/ruby/2.0.0/bundler/gems/CoffeeRandomizerSuperExtreme-6a5b9c763c27/lib/coffee_randomizer_super_extreme/template.rb:143:in `check_for_retry_limit': undefined local variable or method `time' for #<CoffeeRandomizerSuperExtreme::Template:0x007f4e10b603b8> (NameError)
+	from /home/ivisitmd/CoffeeRandomizerSuperExtreme/vendor/bundle/ruby/2.0.0/bundler/gems/CoffeeRandomizerSuperExtreme-6a5b9c763c27/lib/coffee_randomizer_super_extreme/template.rb:34:in `generate'
+	from /home/ivisitmd/CoffeeRandomizerSuperExtreme/vendor/bundle/ruby/2.0.0/bundler/gems/CoffeeRandomizerSuperExtreme-6a5b9c763c27/lib/coffee_randomizer_super_extreme/test_bed.rb:16:in `block in start'
+	from /home/ivisitmd/CoffeeRandomizerSuperExtreme/vendor/bundle/ruby/2.0.0/bundler/gems/CoffeeRandomizerSuperExtreme-6a5b9c763c27/lib/coffee_randomizer_super_extreme/test_bed.rb:12:in `each'
+	from /home/ivisitmd/CoffeeRandomizerSuperExtreme/vendor/bundle/ruby/2.0.0/bundler/gems/CoffeeRandomizerSuperExtreme-6a5b9c763c27/lib/coffee_randomizer_super_extreme/test_bed.rb:12:in `start'
+	from importer.rb:10:in `<main>'
