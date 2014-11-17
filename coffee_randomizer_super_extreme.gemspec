@@ -1,13 +1,12 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'coffee_randomizer_super_extreme/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "coffee_randomizer_super_extreme"
-  spec.version       = CoffeeRandomizerSuperExtreme::VERSION
-  spec.authors       = ["Maria Regina Cu Famador", "John Norman Capule"]
-  spec.email         = ["mariaf@sourcepad.com", "normanc@sourcepad.com"]
+  spec.version       = "3.0"
+  spec.authors       = ["John Norman Capule"]
+  spec.email         = ["normanc@sourcepad.com"]
   spec.summary       = ""
   spec.description   = ""
   spec.homepage      = ""
@@ -22,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.1.0"
   spec.add_development_dependency "pry", "~> 0.10.1"
   spec.add_development_dependency "logger", "~> 1.2.8"
-  spec.add_development_dependency "activesupport", "~> 4.1.6"
+  spec.add_development_dependency "activesupport", "~> 4.1.7"
   spec.add_development_dependency "rake"
 end

@@ -1,4 +1,4 @@
-module CoffeeRandomizerSuperExtreme
+class CoffeeRandomizerSuperExtreme
   class PairManager
     def initialize(participants)
       @pairs = {}

@@ -1,30 +1,29 @@
-module CoffeeRandomizerSuperExtreme
+class CoffeeRandomizerSuperExtreme
   class Template
-    attr_accessor :min_number_per_group, :max_tries_per_round, :season, :pair_manager
+    attr_accessor :min_number_per_group, :season, :pair_manager, :max_tries_per_season, :round_increment
 
-    def initialize(count, increment_max=3, time=600)
+    def initialize(args)
       @min_number_per_group = 3
-      @max_tries_per_round  = 1000
       @max_pair_count = 2
-      @participants = (1..count).to_a
+      @participants = (1..args[:member_count]).to_a
       @sum_of_pair_counts = (0..(@max_pair_count+1))
       @log = ::Logger.new("log/test.log")
       @round_increment = 0
       @complete = false
-      @increment_max = increment_max
-      @pair_manager = CoffeeRandomizerSuperExtreme::PairManager.new(@participants)
-      @time = time
-      @end_time = Time.now + @time.seconds
+      @increment_max = 10
+      @pair_manager = PairManager.new(@participants)
+      @time = 600
     end
 
     def generate
-      while @round_increment <= @increment_max and @complete == false
+      while round_increment <= @increment_max and @complete == false
         new_season
-        while @season.count < number_of_rounds and Time.now < @end_time
+        @max_tries_per_season = 1000
+        while season.count < number_of_rounds and max_tries_per_season > 0
           initialize_round_requirements
-          while @round.count < number_of_groups and @tries_per_round < @max_tries_per_round
+          while @round.count < number_of_groups and @skipped.empty?
             assign_round_groups
-            check_for_round_skips
+            next_group if @skipped.empty?
           end
           if !@available.empty?
             assign_extra_participants
@@ -38,115 +37,106 @@ module CoffeeRandomizerSuperExtreme
     end
 
     def number_of_rounds
-      ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil + @round_increment
+      ((@participants.length - 1.to_f) / (min_number_per_group - 1.to_f)).ceil + round_increment
     end
 
     def number_of_original_rounds
-      ((@participants.length - 1.to_f) / (@min_number_per_group - 1.to_f)).ceil
+      ((@participants.length - 1.to_f) / (min_number_per_group - 1.to_f)).ceil
     end
 
     def number_of_groups
-      (@participants.length / @min_number_per_group.to_f).floor
+      (@participants.length / min_number_per_group.to_f).floor
     end
 
     def check_pairs
-      @pair_manager.check_pairs
+      pair_manager.check_pairs
     end
 
     private
 
-      def initialize_round_requirements
-        @available = @participants.dup
+    def initialize_round_requirements
+      @available = @participants.dup
+      @skipped = []
+      @round = []
+    end
+
+    def accept_to_group(group, target, sum_pair_count)
+      pairs = group.map.each do |participant|
+        pair_manager.get_pair_count(participant, target)
+      end
+      sum = pairs.inject(&:+).to_i
+      sum == sum_pair_count and pairs.select{|p| p == @max_pair_count}.empty?
+    end
+
+    def assign_round_groups
+      @group = []
+      assignment_logic(min_number_per_group)
+    end
+
+    def assign_extra_participants
+      @round.each do |g|
+        @group = g
+        assignment_logic(min_number_per_group + 1)
+      end
+    end
+
+    def assignment_logic(minimum_group_count)
+      @sum_of_pair_counts.each do |condition|
         @skipped = []
-        @round = []
-      end
-
-      def accept_to_group(group, target, sum_pair_count)
-        pairs = group.map.each do |participant|
-          @pair_manager.get_pair_count(participant, target)
+        @available.shuffle.each do |participant|
+          break if @group.count == minimum_group_count
+          if accept_to_group(@group, participant, condition)
+            pair_manager.add_group_to_pairs(@group, participant)
+            @available.delete participant
+            @group << participant
+          else
+            @skipped << participant
+          end
         end
-        sum = pairs.inject(&:+).to_i
-        sum == sum_pair_count and pairs.select{|p| p == @max_pair_count}.empty?
-      end
-
-      def assign_round_groups
-        @group = []
-        assignment_logic(@min_number_per_group)
-      end
-
-      def assign_extra_participants
-        @round.each do |g|
-          @group = g
-          assignment_logic(@min_number_per_group + 1)
-        end
-      end
-
-      def assignment_logic(minimum_group_count)
-        @sum_of_pair_counts.each do |condition|
+        if @group.count == minimum_group_count
           @skipped = []
-          @available.shuffle.each do |participant|
-            break if @group.count == minimum_group_count
-            if accept_to_group(@group, participant, condition)
-              @pair_manager.add_group_to_pairs(@group, participant)
-              @available.delete participant
-              @group << participant
-            else
-              @skipped << participant
-            end
-          end
-          if @group.count == minimum_group_count
-            @skipped = []
-          end
         end
       end
+    end
 
-      def check_for_round_skips
-        if !@skipped.empty?
-          restart_round
-        else
-          next_group
-        end
-      end
+    def restart_round
+      @tries_per_round += 1
+      initialize_round_requirements
+      pair_manager.rebuild_pair_manager(season)
+    end
 
-      def restart_round
-        @tries_per_round += 1
-        initialize_round_requirements
-        @pair_manager.rebuild_pair_manager(@season)
-      end
+    def next_group
+      @available = @available + @skipped
+      @skipped.clear
+      @round << @group
+    end
 
-      def next_group
-        @available = @available + @skipped
-        @skipped.clear
-        @round << @group
+    def season_check
+      if (season.count == number_of_rounds-1 and
+          (check_pairs.uniq.count > 1 or
+           (check_pairs.uniq.count == 1 and
+            check_pairs.uniq.first != @participants.length-1)))
+        @max_tries_per_season -= 1
+        @round = []
+        new_season
+      else
+        @season << @round
       end
+    end
 
-      def season_check
-        if (@tries_per_round >= @max_tries_per_round) or
-            (@season.count == number_of_rounds-1 and
-             (check_pairs.uniq.count > 1 or
-              (check_pairs.uniq.count == 1 and
-               check_pairs.uniq.first != @participants.length-1)))
-          @round = []
-          new_season
-        else
-          @season << @round
-        end
-      end
+    def new_season
+      @season = []
+      @tries_per_round = 0
+      pair_manager.rebuild
+    end
 
-      def new_season
-        @season = []
-        @tries_per_round = 0
-        @pair_manager.rebuild
+    def check_for_retry_limit
+      if max_tries_per_season <= 0
+        @complete = false
+        @round_increment += 1
+      else
+        @complete = season.map{|round| round.map{|group| group.map{|participant| participant}}}
       end
-
-      def check_for_retry_limit
-        if Time.now >= @end_time
-          @end_time = Time.now + @time.seconds
-          @complete = false
-          @round_increment += 1
-        else
-          @complete = @season.map{|round| round.map{|group| group.map{|participant| participant}}}
-        end
-      end
+    end
   end
 end
