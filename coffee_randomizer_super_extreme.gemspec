@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.1.0"
   spec.add_development_dependency "pry", "~> 0.10.1"
   spec.add_development_dependency "logger", "~> 1.2.8"
-  spec.add_development_dependency "activesupport", "~> 4.1.7"
+  spec.add_development_dependency "activesupport", "~> 4.1.8"
   spec.add_development_dependency "rake"
 end
