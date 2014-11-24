@@ -74,6 +74,9 @@ describe CoffeeRandomizerSuperExtreme do
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
+      expect(tg.pair_manager.pairs[1].uniq.size).to be == 7
+      expect(tg.pair_manager.pairs[2].uniq.size).to be == 7
+      expect(tg.pair_manager.pairs[3].uniq.size).to be == 8
     end
 
     it 'should generate a template for 9 participants with 3 unable to meet together' do
@@ -81,6 +84,16 @@ describe CoffeeRandomizerSuperExtreme do
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
+      expect(tg.pair_manager.pairs[1].uniq.size).to be == 6
+      expect(tg.pair_manager.pairs[2].uniq.size).to be == 6
+      expect(tg.pair_manager.pairs[3].uniq.size).to be == 6
+      expect(tg.pair_manager.pairs[4].uniq.size).to be == 8
+    end
+
+    it "should use main class for generating templates" do
+      crse = CoffeeRandomizerSuperExtreme.new({member_count: 9, incompatible_count: 2})
+      expect(crse.results).to_not be == false
+      expect(crse.results).to_not be_empty
     end
   end
 end
