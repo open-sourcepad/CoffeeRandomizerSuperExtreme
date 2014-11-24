@@ -39,6 +39,7 @@ class CoffeeRandomizerSuperExtreme
     @results[@member_count][:number_of_groups] = am.number_of_groups
     @results[@member_count][:max_tries_per_season] = am.max_tries_per_season
     @results[@member_count][:round_increment] = am.round_increment
+    @results[@member_count][:incompatibles] = am.incompatibles
     @results[@member_count][:time] = (end_time - start_time) * 1000
     @log.info "========= Results for #{@member_count} ========="
     @results[@member_count].keys.each do |r|
