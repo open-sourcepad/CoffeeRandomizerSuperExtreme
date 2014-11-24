@@ -4,3 +4,7 @@ machine:
 dependencies:
   pre:
     - gem install bundler
+
+test:
+  override:
+    - CODECLIMATE_REPO_TOKEN=8bf443ac92bf3b1bfbb9c4020702cd7cb5c4f2dc1566ad17dc2fc2a9d4609cd5 bundle exec rake
