@@ -1,5 +1,6 @@
-require "coffee_randomizer_super_extreme/template"
+require "coffee_randomizer_super_extreme/template_helper"
 require "coffee_randomizer_super_extreme/pair_manager"
+require "coffee_randomizer_super_extreme/template"
 require 'active_support'
 require 'active_support/core_ext/numeric/time.rb'
 

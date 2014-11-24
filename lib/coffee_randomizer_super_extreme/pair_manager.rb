@@ -1,5 +1,7 @@
 class CoffeeRandomizerSuperExtreme
   class PairManager
+    attr_accessor :pairs
+
     def initialize(participants)
       @pairs = {}
       @participants = participants
@@ -37,6 +39,18 @@ class CoffeeRandomizerSuperExtreme
         @pairs[participant] << possible_pair
         @pairs[possible_pair] << participant
       end
+    end
+
+    def everyone_met_check(incompatibles)
+      everyone_met = true
+      @pairs.each do |key, value|
+        if incompatibles.include? key
+          everyone_met = false if value.uniq.size < @participants.size - incompatibles.size
+        else
+          everyone_met = false if value.uniq.size < @participants.size - 1
+        end
+      end
+      everyone_met
     end
   end
 end

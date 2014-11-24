@@ -3,7 +3,7 @@ require 'spec_helper'
 describe CoffeeRandomizerSuperExtreme do
   let(:template) { CoffeeRandomizerSuperExtreme::Template}
 
-  context :normz do
+  context :regular do
     it 'should generate a template for 9 participants' do
       tg = template.new({member_count: 9})
       results = tg.generate
@@ -65,6 +65,22 @@ describe CoffeeRandomizerSuperExtreme do
       expect(crse.results).to_not be == false
       expect(crse.results).to_not be_empty
       expect(crse.results[9][:check_pairs].uniq.count).to be == 1
+    end
+  end
+
+  context :use_case_2 do
+    it 'should generate a template for 9 participants with 2 unable to meet together' do
+      tg = template.new({member_count: 9, incompatible_count: 2})
+      results = tg.generate
+      expect(results).to_not be == false
+      expect(results).to_not be_empty
+    end
+
+    it 'should generate a template for 9 participants with 3 unable to meet together' do
+      tg = template.new({member_count: 9, incompatible_count: 3})
+      results = tg.generate
+      expect(results).to_not be == false
+      expect(results).to_not be_empty
     end
   end
 end
