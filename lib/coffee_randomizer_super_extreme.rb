@@ -13,7 +13,7 @@ class CoffeeRandomizerSuperExtreme
   def initialize(args)
     args = args.symbolize_keys
     @member_count = args[:member_count]
-    @incompatible_count = args[:incompatible_count]
+    @incompatibles = args[:incompatibles]
     @log = ::Logger.new("log/results.log")
     @results = {}
     generate
@@ -23,7 +23,7 @@ class CoffeeRandomizerSuperExtreme
 
   def generate
     am = Template.new({member_count: @member_count,
-                       incompatible_count: @incompatible_count})
+                       incompatibles: @incompatibles})
     start_time = Time.now
     succeed = am.generate
     end_time = Time.now

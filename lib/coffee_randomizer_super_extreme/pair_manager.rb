@@ -44,10 +44,10 @@ class CoffeeRandomizerSuperExtreme
     def everyone_met_check(incompatibles)
       everyone_met = true
       @pairs.each do |key, value|
-        if incompatibles.include? key
-          everyone_met = false if value.uniq.size < @participants.size - incompatibles.size
+        if incompatibles[key]
+          everyone_met = false if value.uniq.size < (@participants.size - incompatibles[key].size - 1)
         else
-          everyone_met = false if value.uniq.size < @participants.size - 1
+          everyone_met = false if value.uniq.size < (@participants.size - 1)
         end
       end
       everyone_met

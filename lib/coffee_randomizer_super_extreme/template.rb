@@ -82,7 +82,7 @@ class CoffeeRandomizerSuperExtreme
     end
 
     def season_check
-      if (@incompatibles.empty? and season_check_regular) or season_check_incompatibles
+      if (incompatibles.empty? and season_check_regular) or season_check_incompatibles
         @max_tries_per_season -= 1
         @round = []
         new_season

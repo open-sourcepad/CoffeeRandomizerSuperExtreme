@@ -26,7 +26,7 @@ class CoffeeRandomizerSuperExtreme
       @complete = false
       @pair_manager = PairManager.new(@participants)
       @min_number_per_group = 3
-      @incompatibles = @participants.take(args[:incompatible_count].to_i)
+      @incompatibles = args[:incompatibles] ? args[:incompatibles] : {}
       @max_pair_count = @incompatibles.empty? ? 2 : 3
       @sum_of_pair_counts = (0..(max_pair_count+1))
     end
@@ -72,9 +72,19 @@ class CoffeeRandomizerSuperExtreme
         args[:sum] == args[:sum_pair_count] and
           args[:pairs].select{|p| p == @max_pair_count}.empty?
       else
-        args[:sum] == args[:sum_pair_count] and
-          (@incompatibles & (args[:group] + [args[:target]])).size <= 1
+        args[:sum] == args[:sum_pair_count] and all_compatible(args)
       end
+    end
+
+    private
+
+    def all_compatible(args)
+      compatible = true
+      group = (args[:group] + [args[:target]])
+      group.each do |participant|
+        compatible = false if incompatibles[participant] and (incompatibles[participant] & group).size > 0
+      end
+      compatible
     end
   end
 end

@@ -70,7 +70,7 @@ describe CoffeeRandomizerSuperExtreme do
 
   context :use_case_2 do
     it 'should generate a template for 9 participants with 2 unable to meet together' do
-      tg = template.new({member_count: 9, incompatible_count: 2})
+      tg = template.new({member_count: 9, incompatibles: {1 => [2], 2 => [1]}})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -79,8 +79,18 @@ describe CoffeeRandomizerSuperExtreme do
       expect(tg.pair_manager.pairs[3].uniq.size).to be == 8
     end
 
+    it 'should generate a template for 9 participants with 3 unable to meet together' do
+      tg = template.new({member_count: 9, incompatibles: {1 => [3], 2 => [3], 3 => [1,2]}})
+      results = tg.generate
+      expect(results).to_not be == false
+      expect(results).to_not be_empty
+      expect(tg.pair_manager.pairs[1].uniq.size).to be == 7
+      expect(tg.pair_manager.pairs[2].uniq.size).to be == 7
+      expect(tg.pair_manager.pairs[3].uniq.size).to be == 6
+    end
+
     it "should use main class for generating templates" do
-      crse = CoffeeRandomizerSuperExtreme.new({member_count: 9, incompatible_count: 2})
+      crse = CoffeeRandomizerSuperExtreme.new({member_count: 9, incompatibles: {1 => [2], 2 => [1]}})
       expect(crse.results).to_not be == false
       expect(crse.results).to_not be_empty
     end
