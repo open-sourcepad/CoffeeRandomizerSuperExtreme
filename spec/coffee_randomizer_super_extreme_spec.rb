@@ -5,7 +5,7 @@ describe CoffeeRandomizerSuperExtreme do
 
   context :regular do
     it 'should generate a template for 9 participants' do
-      tg = template.new({member_count: 9})
+      tg = template.new({members: (1..9).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -13,7 +13,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 10 participants' do
-      tg = template.new({member_count: 10})
+      tg = template.new({members: (1..10).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -21,7 +21,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 11 participants' do
-      tg = template.new({member_count: 11})
+      tg = template.new({members: (1..11).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -29,7 +29,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 12 participants' do
-      tg = template.new({member_count: 12})
+      tg = template.new({members: (1..12).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -37,7 +37,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 13 participants' do
-      tg = template.new({member_count: 13})
+      tg = template.new({members: (1..13).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -45,7 +45,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 14 participants' do
-      tg = template.new({member_count: 14})
+      tg = template.new({members: (1..14).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -53,7 +53,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 15 participants' do
-      tg = template.new({member_count: 15})
+      tg = template.new({members: (1..15).to_a})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -61,7 +61,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it "should use main class for generating templates" do
-      crse = CoffeeRandomizerSuperExtreme.new({member_count: 9})
+      crse = CoffeeRandomizerSuperExtreme.new({members: (1..9).to_a})
       expect(crse.results).to_not be == false
       expect(crse.results).to_not be_empty
       expect(crse.results[9][:check_pairs].uniq.count).to be == 1
@@ -70,7 +70,7 @@ describe CoffeeRandomizerSuperExtreme do
 
   context :use_case_2 do
     it 'should generate a template for 9 participants with 2 unable to meet together' do
-      tg = template.new({member_count: 9, incompatibles: {1 => [2], 2 => [1]}})
+      tg = template.new({members: (1..9).to_a, incompatibles: {1 => [2], 2 => [1]}})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -80,7 +80,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it 'should generate a template for 9 participants with 3 unable to meet together' do
-      tg = template.new({member_count: 9, incompatibles: {1 => [3], 2 => [3], 3 => [1,2]}})
+      tg = template.new({members: (1..9).to_a, incompatibles: {1 => [3], 2 => [3], 3 => [1,2]}})
       results = tg.generate
       expect(results).to_not be == false
       expect(results).to_not be_empty
@@ -90,7 +90,7 @@ describe CoffeeRandomizerSuperExtreme do
     end
 
     it "should use main class for generating templates" do
-      crse = CoffeeRandomizerSuperExtreme.new({member_count: 9, incompatibles: {1 => [2], 2 => [1]}})
+      crse = CoffeeRandomizerSuperExtreme.new({members: (1..9).to_a, incompatibles: {1 => [2], 2 => [1]}})
       expect(crse.results).to_not be == false
       expect(crse.results).to_not be_empty
     end

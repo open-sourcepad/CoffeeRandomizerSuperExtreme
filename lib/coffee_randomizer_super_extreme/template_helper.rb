@@ -20,7 +20,7 @@ class CoffeeRandomizerSuperExtreme
 
     def initialize_variables(args)
       @increment_max = 10
-      @participants = (1..args[:member_count]).to_a
+      @participants = args[:members]
       @log = ::Logger.new("log/test.log")
       @round_increment = 0
       @complete = false

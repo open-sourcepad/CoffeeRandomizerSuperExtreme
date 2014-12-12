@@ -12,7 +12,7 @@ class CoffeeRandomizerSuperExtreme
 
   def initialize(args)
     args = args.symbolize_keys
-    @member_count = args[:member_count]
+    @members = args[:members]
     @incompatibles = args[:incompatibles]
     @log = ::Logger.new("log/results.log")
     @results = {}
@@ -22,7 +22,7 @@ class CoffeeRandomizerSuperExtreme
   private
 
   def generate
-    am = Template.new({member_count: @member_count,
+    am = Template.new({members: @members,
                        incompatibles: @incompatibles})
     start_time = Time.now
     succeed = am.generate
@@ -31,19 +31,19 @@ class CoffeeRandomizerSuperExtreme
   end
 
   def print_results(start_time, end_time, succeed, am)
-    @results[@member_count] = {}
-    @results[@member_count][:result] = succeed
-    @results[@member_count][:check_pairs] = am.check_pairs
-    @results[@member_count][:number_of_rounds] = am.number_of_rounds
-    @results[@member_count][:number_of_original_rounds] = am.number_of_original_rounds
-    @results[@member_count][:number_of_groups] = am.number_of_groups
-    @results[@member_count][:max_tries_per_season] = am.max_tries_per_season
-    @results[@member_count][:round_increment] = am.round_increment
-    @results[@member_count][:incompatibles] = am.incompatibles
-    @results[@member_count][:time] = (end_time - start_time) * 1000
-    @log.info "========= Results for #{@member_count} ========="
-    @results[@member_count].keys.each do |r|
-      @log.info "#{r}: #{@results[@member_count][r]}"
+    @results[@members.size] = {}
+    @results[@members.size][:result] = succeed
+    @results[@members.size][:check_pairs] = am.check_pairs
+    @results[@members.size][:number_of_rounds] = am.number_of_rounds
+    @results[@members.size][:number_of_original_rounds] = am.number_of_original_rounds
+    @results[@members.size][:number_of_groups] = am.number_of_groups
+    @results[@members.size][:max_tries_per_season] = am.max_tries_per_season
+    @results[@members.size][:round_increment] = am.round_increment
+    @results[@members.size][:incompatibles] = am.incompatibles
+    @results[@members.size][:time] = (end_time - start_time) * 1000
+    @log.info "========= Results for #{@members.size} ========="
+    @results[@members.size].keys.each do |r|
+      @log.info "#{r}: #{@results[@members.size][r]}"
     end
   end
 
